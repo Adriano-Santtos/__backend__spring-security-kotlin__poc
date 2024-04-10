@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: poc-spring-security
+    environment:
+      POSTGRES_DB: poc-spring-security
+      POSTGRES_USER: local
+      POSTGRES_PASSWORD: local
+    ports:
+      - "5432:5432"
+
+
+  flyway:
+    image: flyway/flyway
+    command: [ "-url=jdbc:postgresql://postgres:5432/poc-spring-security", "-user=local", "-password=local", "migrate" ]
+    volumes:
+      - ./flyway/sql:/flyway/sql
+    depends_on:
+      - postgres
+    networks:
+      - poc-spring-security
+
+networks:
+  poc-spring-security:
+    driver: bridge
